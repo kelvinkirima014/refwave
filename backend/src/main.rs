@@ -2,6 +2,7 @@ use backend::{config::Config, startup};
 use clap::Parser;
 use sqlx::postgres::PgPoolOptions;
 use dotenv::dotenv;
+use tracing::info;
 use std::{env, str::FromStr};
 use tracing_subscriber::{ filter::Targets, layer::SubscriberExt, util::SubscriberInitExt };
 
@@ -33,9 +34,11 @@ async fn main() -> anyhow::Result<(), anyhow::Error> {
         .connect(&config.database_url)
         .await?;
 
-
+    info!("Initialized db!");
 
     sqlx::migrate!().run(&db).await?;
+
+    info!("Now running migrations!");
 
 
     // if let Ok(_) = run(config, db).await {
@@ -43,6 +46,7 @@ async fn main() -> anyhow::Result<(), anyhow::Error> {
     // }
 
     startup::run(config, db).await?;
+    info!("Program Server Running...");
     
 
     // match run().await {

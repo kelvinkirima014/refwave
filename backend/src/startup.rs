@@ -11,6 +11,13 @@ use tracing::info;
 use crate::routes::users::router;
 use crate::config::Config;
 
+
+///The core type through which handler functions can access common API state.
+/// 
+/// THis can be accessed by adding a parameter `Extension<HandlerContext>` to a handler function's
+/// parameters
+
+
 #[derive(Clone)]
 pub struct ApiContext {
     pub config: Arc<Config>,
