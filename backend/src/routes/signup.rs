@@ -1,5 +1,6 @@
-use axum::Json;
+//use axum::Json;
 use axum::extract::Extension;
+use axum::extract::Form;
 use axum_macros::debug_handler;
 //use serde_json::json;
 use crate::routes::users::{ UserInput, User, generate_referral_code };
@@ -9,8 +10,8 @@ use crate::error::ApiError;
 #[debug_handler]
 pub async fn signup(
     ctx: Extension<ApiContext>, 
-    Json(input): Json<UserInput>
-) -> Result<Json<User>, ApiError> {
+    Form(input): Form<UserInput>
+) -> Result<Form<User>, ApiError> {
     
     let referral_code_result = generate_referral_code(input.username.clone().unwrap());
 
@@ -39,7 +40,7 @@ pub async fn signup(
                 dbg!(err);
                 ApiError::InternalServerError
             })?;
-            Ok(Json(User { 
+            Ok(Form(User { 
                 username, 
                 referral_code: Some(new_referral_code) 
             }))
