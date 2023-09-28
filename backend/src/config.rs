@@ -1,3 +1,7 @@
+//use std::env;
+use dotenv::dotenv;
+use clap::Parser;
+
 ///The configuration parameters for the application
 /// 
 /// These parameters should be pulled from environment variables
@@ -10,3 +14,19 @@ pub struct Config {
     #[clap(long, env)]
     pub database_url: String,
 }
+
+impl Config {
+    pub fn new() -> Self {
+        dotenv().ok();
+        Config::parse()
+    }
+}
+
+
+
+// impl Default for Config {
+//     fn default() -> Self {
+//         dotenv().ok();
+//         Config::parse()
+//     }
+// }
