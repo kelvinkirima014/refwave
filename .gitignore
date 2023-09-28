@@ -1,0 +1,46 @@
+# Environment
+.env
+.env*.local
+
+
+#target 
+target/
+
+# Environment
+frontend/.env
+frontend/.env*.local
+backend/.env
+backend/.env*.local
+
+
+
+#target 
+backend/target/
+
+
+
+frontend/dist
+.solid
+.output
+.vercel
+.netlify
+netlify
+
+# Environment
+.env
+.env*.local
+
+# dependencies
+frontend/node_modules
+
+# IDEs and editors
+/.idea
+.project
+.classpath
+*.launch
+.settings/
+
+
+# System Files
+.DS_Store
+Thumbs.db
