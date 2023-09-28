@@ -1,5 +1,6 @@
 use sqlx::PgPool;
 use tower::ServiceBuilder;
+use tower_http::cors::{ CorsLayer, Any };
 use std::sync::Arc;
 use std::net::SocketAddr;
 use axum::{
@@ -17,7 +18,6 @@ use crate::config::Config;
 /// THis can be accessed by adding a parameter `Extension<HandlerContext>` to a handler function's
 /// parameters
 
-
 #[derive(Clone)]
 pub struct ApiContext {
     pub config: Arc<Config>,
@@ -28,15 +28,16 @@ pub fn api_router() -> Router {
     router()
 }
 
-
 pub async fn run(config: Config, db: PgPool) -> color_eyre::Result<(), anyhow::Error> {
 
+    let cors = CorsLayer::new().allow_origin(Any);
     let app = api_router().layer(
         ServiceBuilder::new()
             .layer(Extension(ApiContext {
                 config: Arc::new(config), 
                 db
             }))
+            .layer(cors)
     );
 
     let addr: SocketAddr = ([127, 0, 0, 1], 8080).into();

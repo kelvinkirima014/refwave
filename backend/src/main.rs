@@ -11,7 +11,7 @@ use tracing_subscriber::{ filter::Targets, layer::SubscriberExt, util::Subscribe
 async fn main() -> anyhow::Result<(), anyhow::Error> {
 
     dotenv().ok();
-    color_eyre::install().unwrap();
+    color_eyre::install().expect("Failed to load color_eyre");
 
     let filter_layer = 
         Targets::from_str(env::var("RUST_LOG")
@@ -33,27 +33,13 @@ async fn main() -> anyhow::Result<(), anyhow::Error> {
         .max_connections(50)
         .connect(&config.database_url)
         .await?;
-
     info!("Initialized db!");
 
     sqlx::migrate!().run(&db).await?;
-
     info!("Now running migrations!");
-
-
-    // if let Ok(_) = run(config, db).await {
-    //     info!("Server is running successfully!")
-    // }
 
     startup::run(config, db).await?;
     info!("Program Server Running...");
-    
-
-    // match run().await {
-    //     Ok(_) => println!("Server is running successfully!"),
-    //     Err(e) => eprintln!("Server encounted an error: {:?}", e) 
-    // }    
-
 
     Ok(())
     

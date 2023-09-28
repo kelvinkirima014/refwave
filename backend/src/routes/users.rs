@@ -25,17 +25,9 @@ pub struct UserInput {
     pub referral_code: Option<String>
 }
 
+
+#[derive(Serialize, Deserialize, Debug)]
 pub struct User {
     pub username: String,
     pub referral_code: Option<String>,
-}
-
-impl User {
-    pub fn new(username: String) -> Self {
-        let referral_code = Some(generate_referral_code(username.clone()));
-        User { 
-           username,
-           referral_code,
-        }
-    }
 }
