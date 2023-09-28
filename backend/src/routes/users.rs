@@ -2,7 +2,7 @@ use rand::{Rng, thread_rng};
 use serde::{Serialize, Deserialize};
 use axum::{Router, routing::{get, post}};
 
-use crate::root;
+use crate::{root, error::ApiError};
 use super::{health_check, signup};
 
 pub fn router() -> Router {
@@ -12,12 +12,18 @@ pub fn router() -> Router {
         .route("/users", post(signup))
 }
 
-pub(crate) fn generate_referral_code(username:String) -> String {
+pub(crate) fn generate_referral_code(username:String) -> Result<String, ApiError> {
+    if username.len() < 3 {
+        return Err(ApiError::InvalidUserName);
+    }
     let random_num = thread_rng().gen_range(10000..100000);
     let prefix = &username[..3].to_uppercase();
-    format!("{}{}", prefix, random_num)
+    Ok(format!("{}{}", prefix, random_num))
 }
 
+
+//will probably need to derive sqlx::FromRow to make data
+//fetchable from the database
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct UserInput {

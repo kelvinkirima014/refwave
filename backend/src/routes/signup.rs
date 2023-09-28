@@ -11,10 +11,18 @@ pub async fn signup(
     ctx: Extension<ApiContext>, 
     Json(input): Json<UserInput>
 ) -> Result<Json<User>, ApiError> {
-    let new_referral_code = generate_referral_code(input.username.clone().unwrap());
+    
+    let referral_code_result = generate_referral_code(input.username.clone().unwrap());
+
+    // Handle the error from generate_referral_code
+    let new_referral_code = match referral_code_result {
+        Ok(code) => code,
+        Err(e) => return Err(e),
+    };
+
 
     if let Some(username) = input.username {
-        if username.is_empty() {
+        if username.is_empty() && input.referral_code.is_none() {
             return Err(ApiError::MissingCredential);
         } else {
             sqlx::query!(
