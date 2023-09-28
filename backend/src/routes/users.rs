@@ -12,7 +12,7 @@ pub fn router() -> Router {
         .route("/users", post(signup))
 }
 
-pub(crate) fn generate_referral_code(username:String) -> Result<String, ApiError> {
+pub fn generate_referral_code(username:String) -> Result<String, ApiError> {
     if username.len() < 3 {
         return Err(ApiError::InvalidUserName);
     }

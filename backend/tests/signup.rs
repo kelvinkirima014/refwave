@@ -14,7 +14,7 @@ async fn signup_returns_a_200_for_valid_form_data() {
 
     let client = hyper::Client::new();
 
-    let body = hyper::Body::from("username=zoro juro");
+    let body = hyper::Body::from("username=kirima");
 
     let request = hyper::Request::builder()
         .method(hyper::Method::POST)
@@ -31,14 +31,14 @@ async fn signup_returns_a_200_for_valid_form_data() {
     //assert_eq!(response.status(), hyper::StatusCode::OK);
 
     let saved = sqlx::query!(
-        "select username, referral_code from users",
+        "select username, referral_code from users where username = 'kirima' ",
         )
         .fetch_one(&db_connection)
         .await
         .expect("Failed to fetch saved data");
 
-    assert_eq!(saved.username, "zorojuro");
-    //assert_eq!(saved.referral_code, "");
+    assert_eq!(saved.username, "kirima");
+    assert!(!saved.referral_code.is_empty());
 
 }
 
