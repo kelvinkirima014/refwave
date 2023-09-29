@@ -35,5 +35,5 @@ pub struct UserInput {
 #[derive(Serialize, Deserialize, Debug)]
 pub struct User {
     pub username: String,
-    pub referral_code: Option<String>,
+    pub referral_code: String,
 }

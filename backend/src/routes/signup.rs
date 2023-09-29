@@ -2,6 +2,7 @@
 use axum::extract::Extension;
 use axum::extract::Form;
 use axum_macros::debug_handler;
+use tracing::error;
 //use serde_json::json;
 use crate::routes::users::{ UserInput, User, generate_referral_code };
 use crate::startup::ApiContext;
@@ -37,12 +38,12 @@ pub async fn signup(
             .execute(&ctx.db)
             .await
             .map_err(|err| {
-                dbg!(err);
+                error!("Error trying to connect into the database: {}", err);
                 ApiError::InternalServerError
             })?;
             Ok(Form(User { 
                 username, 
-                referral_code: Some(new_referral_code) 
+                referral_code: new_referral_code 
             }))
         }
     } else {

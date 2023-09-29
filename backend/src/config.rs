@@ -2,7 +2,7 @@
 use dotenv::dotenv;
 use clap::Parser;
 
-///The configuration parameters for the application
+///The configuration parameters for the application.
 /// 
 /// These parameters should be pulled from environment variables
 /// But you could also pass them via the CLI especially in a production 

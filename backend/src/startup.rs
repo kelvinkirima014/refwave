@@ -15,7 +15,7 @@ use crate::config::Config;
 
 ///The core type through which handler functions can access common API state.
 /// 
-/// THis can be accessed by adding a parameter `Extension<HandlerContext>` to a handler function's
+/// This can be accessed by adding a parameter `Extension<ApiContext>` to a handler function's
 /// parameters
 
 #[derive(Clone)]
@@ -49,5 +49,6 @@ pub async fn run(config: Config, db: PgPool) -> color_eyre::Result<(), anyhow::E
         .await?;
 
     Ok(())
+    
     
 }
