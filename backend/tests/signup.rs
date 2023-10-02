@@ -18,11 +18,11 @@ async fn signup_returns_a_200_for_valid_form_data() {
 
     let client = hyper::Client::new();
 
-    let body = hyper::Body::from("username=jimbei");
+    let body = hyper::Body::from("username=brook");
 
     let request = hyper::Request::builder()
         .method(hyper::Method::POST)
-        .uri("http://127.0.0.1:8080/users")
+        .uri("http://127.0.0.1:8080/users/signup")
         .header("Content-Type", "application/x-www-form-urlencoded")
         .body(body)
         .expect("Failed to create request");
@@ -35,13 +35,13 @@ async fn signup_returns_a_200_for_valid_form_data() {
     assert_eq!(response.status(), hyper::StatusCode::OK);
 
     let saved = sqlx::query!(
-        "select username, referral_code from users where username = 'jimbei' ",
+        "select username, referral_code from users where username = 'brook' ",
         )
         .fetch_one(&db_connection)
         .await
         .expect("Failed to fetch saved data");
 
-    assert_eq!(saved.username, "jimbei");
+    assert_eq!(saved.username, "brook");
     assert!(!saved.referral_code.is_empty());
 
 }

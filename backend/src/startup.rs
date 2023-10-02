@@ -1,4 +1,3 @@
-use axum::extract::State;
 use sqlx::PgPool;
 use tower::ServiceBuilder;
 use tower_http::cors::{ CorsLayer, Any };
@@ -25,6 +24,7 @@ pub struct ApiContext {
     pub db: PgPool,
 }
 
+
 pub fn api_router() -> Router {
     router()
 }
@@ -32,14 +32,15 @@ pub fn api_router() -> Router {
 pub async fn run(config: Config, db: PgPool) -> color_eyre::Result<(), anyhow::Error> {
 
     let cors = CorsLayer::new().allow_origin(Any);
+
     let app = api_router().layer(
         ServiceBuilder::new()
-            .layer(Extension(ApiContext {
-                config: Arc::new(config), 
-                db
-            }))
-            .layer(cors)
-    );
+        .layer(cors)
+        .layer(Extension(ApiContext {
+            config: Arc::new(config),
+            db,
+        }))
+        );
 
     let addr: SocketAddr = ([127, 0, 0, 1], 8080).into();
     info!("Server listening on port: http://{:?}", addr);

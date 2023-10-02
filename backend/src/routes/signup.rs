@@ -1,53 +1,42 @@
 use axum::Extension;
-//use axum::Json;
-use axum::extract::State;
 use axum::extract::Form;
 use axum_macros::debug_handler;
 use tracing::error;
 //use serde_json::json;
-use crate::routes::users::{ UserInput, User, generate_referral_code };
+use crate::routes::users::{ UsernameInput, User, generate_referral_code };
 use crate::startup::ApiContext;
 use crate::error::ApiError;
 
+use super::users::UserBody;
+
 #[debug_handler]
-pub async fn signup(
+pub async fn signup_username(
     ctx: Extension<ApiContext>, 
-    Form(input): Form<UserInput>
-) -> Result<Form<User>, ApiError> {
-    
-    let referral_code_result = generate_referral_code(input.username.clone().unwrap());
+    Form(input): Form<UserBody<UsernameInput>>
+) -> Result<Form<UserBody<User>>, ApiError> {
 
-    // Handle the error from generate_referral_code
-    let new_referral_code = match referral_code_result {
-        Ok(code) => code,
-        Err(e) => return Err(e),
-    };
+    let referral_code = generate_referral_code(input.user.username.clone())?;
 
-
-    if let Some(username) = input.username {
-        if username.is_empty() && input.referral_code.is_none() {
-            return Err(ApiError::MissingCredential);
-        } else {
-            sqlx::query!(
-                r#"
-                    insert into users (username, referral_code)
-                    values ($1, $2)
-                "#,
-                username,
-                new_referral_code
-            )
-            .execute(&ctx.db)
-            .await
-            .map_err(|err| {
-                error!("Error trying to connect into the database: {}", err);
-                ApiError::InternalServerError
-            })?;
-            Ok(Form(User { 
-                username, 
-                referral_code: new_referral_code 
-            }))
-        }
+    if input.user.username.is_empty(){
+        return Err(ApiError::MissingCredential);
     } else {
-        Err(ApiError::InternalServerError)
+        let insert_user  = sqlx::query_as!(
+            User,
+            r#"
+                insert into users(username, referral_code)
+                values($1, $2)
+                returning username, id, referral_code, invited_users_count
+            "#,
+            input.user.username,
+            referral_code
+        )
+        .fetch_one(&ctx.0.db)
+        .await
+        .map_err(|err| {
+            error!("Error trying to insert to the database: {}", err);
+            ApiError::InternalServerError
+        })?;
+
+        Ok(Form(UserBody { user: insert_user }))        
     }
 }
