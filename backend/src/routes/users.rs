@@ -4,12 +4,13 @@ use axum::{Router, routing::{get, post}};
 use sqlx::{FromRow, types::chrono};
 
 use crate::{root, error::ApiError};
-use super::{health_check, signup_username, signup_refcode};
+use super::{health_check, signup_username, signup_refcode, view_users};
 
 pub fn router() -> Router {
 Router::new()
     .route("/", get(root))
     .route("/health_check", get(health_check))
+    .route("/users/view", get(view_users))
     .route("/users/signup-username", post(signup_username))
     .route("/users/signup-refcode", post(signup_refcode))
 }

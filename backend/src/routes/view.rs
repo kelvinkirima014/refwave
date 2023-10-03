@@ -1,11 +1,11 @@
 use axum::{Extension, Json};
-use serde_json::Value;
+use serde_json::{Value, json};
 use tracing::error;
 
 use crate::{startup::ApiContext, error::ApiError};
 use crate::routes::users::User;
 
-pub fn view_users(
+pub async fn view_users(
     ctx: Extension<ApiContext>,
 ) -> Result<Json<Value>, ApiError> {
     let users = sqlx::query_as!(
@@ -21,5 +21,5 @@ pub fn view_users(
         ApiError::InternalServerError
     })?;
 
-    Ok(Json(users))
+    Ok(Json(json!(users)))
 }
