@@ -1,4 +1,4 @@
-use axum::Extension;
+use axum::{Extension, Json};
 use axum::extract::Form;
 use axum_macros::debug_handler;
 use tracing::{error, debug};
@@ -13,7 +13,7 @@ use super::users::{UserBody, RefcodeInput};
 pub async fn signup_username(
     ctx: Extension<ApiContext>, 
     Form(input): Form<UserBody<UsernameInput>>
-) -> Result<Form<UserBody<User>>, ApiError> {
+) -> Result<Json<UserBody<User>>, ApiError> {
     debug!("Received signup request for username: {}", input.user.username);
 
 
@@ -41,7 +41,7 @@ pub async fn signup_username(
         })?;
         debug!("Successfully inserted user: {:?}", user);
 
-        Ok(Form(UserBody {
+        Ok(Json(UserBody {
            user,
         }))
     }
@@ -51,7 +51,7 @@ pub async fn signup_username(
 pub async fn signup_refcode(
     ctx: Extension<ApiContext>,
     Form(input): Form<UserBody<RefcodeInput>>
-) -> Result<Form<UserBody<User>>, ApiError> {
+) -> Result<Json<UserBody<User>>, ApiError> {
     debug!("signing up user with referral code!");
 
     if input.user.referral_code.is_empty() {
@@ -92,6 +92,6 @@ pub async fn signup_refcode(
         ApiError::InternalServerError
     })?;
 
-    Ok(Form(UserBody { user: new_user }))
+    Ok(Json(UserBody { user: new_user }))
 
 }
