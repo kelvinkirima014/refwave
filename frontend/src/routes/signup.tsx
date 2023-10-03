@@ -6,13 +6,33 @@ export default function Signup() {
 
     const [username, setUsername] = createSignal("");
     
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         if (username().length < 3) {
             console.log("please add a username with three or more characters");
-          ;
-        } else {
-            setUsername(username)
+        } 
+
+        const formData = new URLSearchParams();
+        formData.append('user[username]', username());
+
+        try {
+                let response = await fetch("http://127.0.0.1:8080/users/signup-username", {
+                    method: 'POST',
+                    mode: 'cors',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: formData,
+                });
+
+                if (response.ok) {
+                    console.log("signup successful!");
+                } else {
+                    console.error("Signup failed:", await response.text());
+                }
+            } catch (error){
+                console.error("Error occured:", error);
         }
+        
     }
 
 
@@ -32,7 +52,7 @@ export default function Signup() {
                      />
                      {/* {errormessage() && <div class="text-red-500 mb-2">{errormessage()}</div> } */}
                     <button 
-                        onClick={() => {handleSubmit}} 
+                        onClick={handleSubmit}
                         class="bg-red-200 text-gray-900 mt-8 ml-5 py-2 px-4 rounded-full">
                         Signup
                     </button>

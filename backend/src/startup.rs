@@ -1,3 +1,5 @@
+use axum::http::HeaderName;
+use hyper::Method;
 use sqlx::PgPool;
 use tower::ServiceBuilder;
 use tower_http::cors::{ CorsLayer, Any };
@@ -31,7 +33,13 @@ pub fn api_router() -> Router {
 
 pub async fn run(config: Config, db: PgPool) -> color_eyre::Result<(), anyhow::Error> {
 
-    let cors = CorsLayer::new().allow_origin(Any);
+    let cors = CorsLayer::new()
+        .allow_origin(Any)
+        .allow_methods(vec![Method::POST, Method::GET, Method::PUT, Method::DELETE])
+        .allow_headers(vec![
+            HeaderName::from_static("content-type"),
+            HeaderName::from_static("authorization"),
+    ]);
 
     let app = api_router().layer(
         ServiceBuilder::new()
