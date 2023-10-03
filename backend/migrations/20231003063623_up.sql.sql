@@ -1,11 +1,15 @@
 create table if not exists users(
     username varchar(255) not null unique,
-    user_id serial primary key,
+    id serial primary key,
     referral_code varchar(255) not null unique,
     referred_by varchar(255) references users(referral_code),
     invited_users_count int default 0,
-    created_at timestamp default current_timestamp,
-    updated_at timestamp default current_timestamp
+    created_at timestamp
+    with
+        time zone default now(),
+        updated_at timestamp
+    with
+        time zone default now()
 );
 
 -- Create a trigger function to automatically update a `updated_at`

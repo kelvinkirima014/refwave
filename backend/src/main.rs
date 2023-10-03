@@ -3,8 +3,7 @@ use clap::Parser;
 use sqlx::postgres::PgPoolOptions;
 use dotenv::dotenv;
 use tracing::info;
-use std::{env, str::FromStr};
-use tracing_subscriber::{ filter::Targets, layer::SubscriberExt, util::SubscriberInitExt };
+use tracing_subscriber::{ layer::SubscriberExt, util::SubscriberInitExt };
 
 
 #[tokio::main]
@@ -13,15 +12,9 @@ async fn main() -> anyhow::Result<(), anyhow::Error> {
     dotenv().ok();
     color_eyre::install().expect("Failed to load color_eyre");
 
-    let filter_layer = 
-        Targets::from_str(env::var("RUST_LOG")
-        .as_deref()
-        .unwrap_or("info"))
-        .unwrap();
-
     let format_layer = tracing_subscriber::fmt::layer();
     tracing_subscriber::registry()
-        .with(filter_layer)
+        //.with(filter_layer)
         .with(format_layer)
         .init();
 
