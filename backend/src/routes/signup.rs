@@ -28,7 +28,7 @@ pub async fn signup_username(
             r#"
                 insert into users(username, referral_code)
                 values($1, $2)
-                returning username, id, referral_code, referred_by, invited_users_count, created_at, updated_at
+                returning *
             "#,
             input.user.username,
             referral_code
