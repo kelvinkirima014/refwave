@@ -36,6 +36,13 @@ pub async fn signup_username(
         .fetch_one(&ctx.0.db)
         .await
         .map_err(| err | {
+
+            if let sqlx::Error::Database(db_err) = &err {
+                if db_err.code().as_deref() == Some("23505") {
+                   return ApiError::UserAlreadyExists;
+                }
+            }
+            
             error!("error trying to insert into db: {}", err);
             ApiError::InternalServerError
         })?;

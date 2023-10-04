@@ -58,7 +58,7 @@ async fn refcode_signup_returns_a_200_for_valid_form_data() {
 
     let client = hyper::Client::new();
 
-    let body = hyper::Body::from("referral_code=JOHN12345");
+    let body = hyper::Body::from("referral_code=JOHN123");
 
     let request = hyper::Request::builder()
         .method(hyper::Method::POST)
