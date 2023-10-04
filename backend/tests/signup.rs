@@ -23,7 +23,7 @@ async fn signup_returns_a_200_for_valid_form_data() {
     let request = hyper::Request::builder()
         .method(hyper::Method::POST)
         .uri("http://127.0.0.1:8080/users/signup-username")
-        .header("Content-Type", "application/json")
+        .header("Content-Type", "application/x-www-form-urlencoded")
         .body(body)
         .expect("Failed to create request");
 
@@ -63,7 +63,7 @@ async fn refcode_signup_returns_a_200_for_valid_form_data() {
     let request = hyper::Request::builder()
         .method(hyper::Method::POST)
         .uri("http://127.0.0.1:8080/users/signup-refcode")
-        .header("Content-Type", "application/json")
+        .header("Content-Type", "application/x-www-form-urlencoded")
         .body(body)
         .expect("Failed to create request");
 

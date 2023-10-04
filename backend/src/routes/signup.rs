@@ -36,7 +36,7 @@ pub async fn signup_username(
         .fetch_one(&ctx.0.db)
         .await
         .map_err(| err | {
-            error!("error trying to insert into db: {err}");
+            error!("error trying to insert into db: {}", err);
             ApiError::InternalServerError
         })?;
         debug!("Successfully inserted user: {:?}", user);
@@ -68,8 +68,8 @@ pub async fn signup_refcode(
     .fetch_one(&ctx.db)
     .await
     .map_err(| err | {
-        error!("error inserting refcode into db: {err}");
-        ApiError::InternalServerError
+        error!("error fetching user by referral code from DB: {err}");
+        ApiError::UserDoesNotExist
     })?;
 
     let new_username = generate_username(&referrer.username)?;

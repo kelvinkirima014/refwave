@@ -11,7 +11,7 @@ pub enum ApiError {
     MissingCredential,
     InvalidUserName,
     UserAlreadyExists,
-    UserDoesNotExist
+    UserDoesNotExist,
 }
 
 impl IntoResponse for ApiError {
