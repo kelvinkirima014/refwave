@@ -12,13 +12,17 @@ export default function Signup() {
         } 
 
         try {
+
+                let formData = new URLSearchParams();
+                formData.append('username', username());
+
                 let response = await fetch("http://127.0.0.1:8080/users/signup-username", {
                     method: 'POST',
                     mode: 'cors',
                     headers: {
                         'Content-Type': 'application/x-www-form-urlencoded',
                     },
-                    body: username(),
+                    body: formData,
                 });
 
                 if (response.ok) {
