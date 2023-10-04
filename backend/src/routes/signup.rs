@@ -12,17 +12,17 @@ use super::users::{UserBody, RefcodeInput};
 #[debug_handler]
 pub async fn signup_username(
     ctx: Extension<ApiContext>, 
-    Form(input): Form<UserBody<UsernameInput>>
+    Form(input): Form<UsernameInput>
 ) -> Result<Json<UserBody<User>>, ApiError> {
-    debug!("Received signup request for username: {}", input.user.username);
+    debug!("Received signup request for username: {}", input.username);
 
 
-    let referral_code = generate_referral_code(input.user.username.clone())?;
+    let referral_code = generate_referral_code(input.username.clone())?;
 
-    if input.user.username.is_empty(){
+    if input.username.is_empty(){
         return Err(ApiError::MissingCredential);
     } else {
-        debug!("Inserting user: {} with referral code: {}", input.user.username, referral_code);
+        debug!("Inserting user: {} with referral code: {}", input.username, referral_code);
         let user = sqlx::query_as!(
             User,
             r#"
@@ -30,7 +30,7 @@ pub async fn signup_username(
                 values($1, $2)
                 returning *
             "#,
-            input.user.username,
+            input.username,
             referral_code
         )
         .fetch_one(&ctx.0.db)
@@ -50,11 +50,11 @@ pub async fn signup_username(
 #[debug_handler]
 pub async fn signup_refcode(
     ctx: Extension<ApiContext>,
-    Form(input): Form<UserBody<RefcodeInput>>
+    Form(input): Form<RefcodeInput>
 ) -> Result<Json<UserBody<User>>, ApiError> {
     debug!("signing up user with referral code!");
 
-    if input.user.referral_code.is_empty() {
+    if input.referral_code.is_empty() {
         return Err(ApiError::MissingCredential);
     }
 
@@ -63,7 +63,7 @@ pub async fn signup_refcode(
         r#"
             select * from users where referral_code = $1   
         "#,
-        input.user.referral_code
+        input.referral_code
     )
     .fetch_one(&ctx.db)
     .await

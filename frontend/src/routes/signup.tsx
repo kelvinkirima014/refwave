@@ -11,9 +11,6 @@ export default function Signup() {
             console.log("please add a username with three or more characters");
         } 
 
-        const formData = new URLSearchParams();
-        formData.append('user[username]', username());
-
         try {
                 let response = await fetch("http://127.0.0.1:8080/users/signup-username", {
                     method: 'POST',
@@ -21,7 +18,7 @@ export default function Signup() {
                     headers: {
                         'Content-Type': 'application/x-www-form-urlencoded',
                     },
-                    body: formData,
+                    body: username(),
                 });
 
                 if (response.ok) {
