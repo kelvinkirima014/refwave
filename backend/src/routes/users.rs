@@ -4,7 +4,7 @@ use axum::{Router, routing::{get, post}};
 use sqlx::{FromRow, types::chrono};
 
 use crate::{root, error::ApiError};
-use super::{health_check, signup_username, signup_refcode, view_users};
+use super::{health_check, signup_username, signup_refcode, view_users, login};
 
 pub fn router() -> Router {
 Router::new()
@@ -13,6 +13,7 @@ Router::new()
     .route("/users/view", get(view_users))
     .route("/users/signup-username", post(signup_username))
     .route("/users/signup-refcode", post(signup_refcode))
+    .route("/users/login", post(login))
 }
 
 pub fn generate_referral_code(username:String) -> Result<String, ApiError> {
@@ -49,9 +50,4 @@ pub struct User {
     pub invited_users_count: Option<i32>,
     pub created_at: Option<chrono::DateTime<chrono::Utc>>,
     pub updated_at: Option<chrono::DateTime<chrono::Utc>>,
-}
-
-#[derive(Debug, Serialize, Deserialize)]
-pub struct UserBody<T> {
-    pub user: T,
 }

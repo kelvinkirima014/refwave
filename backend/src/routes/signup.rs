@@ -7,13 +7,13 @@ use crate::routes::users::{ UsernameInput, User, generate_referral_code, generat
 use crate::startup::ApiContext;
 use crate::error::ApiError;
 
-use super::users::{UserBody, RefcodeInput};
+use super::users::RefcodeInput;
 
 #[debug_handler]
 pub async fn signup_username(
     ctx: Extension<ApiContext>, 
     Form(input): Form<UsernameInput>
-) -> Result<Json<UserBody<User>>, ApiError> {
+) -> Result<Json<User>, ApiError> {
     debug!("Received signup request for username: {}", input.username);
 
 
@@ -48,9 +48,7 @@ pub async fn signup_username(
         })?;
         debug!("Successfully inserted user: {:?}", user);
 
-        Ok(Json(UserBody {
-           user,
-        }))
+        Ok(Json(user))
     }
 }
 
@@ -58,7 +56,7 @@ pub async fn signup_username(
 pub async fn signup_refcode(
     ctx: Extension<ApiContext>,
     Form(input): Form<RefcodeInput>
-) -> Result<Json<UserBody<User>>, ApiError> {
+) -> Result<Json<User>, ApiError> {
     debug!("signing up user with referral code!");
 
     if input.referral_code.is_empty() {
@@ -129,6 +127,28 @@ pub async fn signup_refcode(
         ApiError::InternalServerError
     })?;
 
-    Ok(Json(UserBody { user: new_user }))
+    Ok(Json( new_user ))
 
+}
+
+pub async fn login(
+    ctx: Extension<ApiContext>,
+    Form(input): Form<UsernameInput>
+) -> Result<Json<User>, ApiError> {
+
+    let user = sqlx::query_as!(
+        User,
+        r#"
+            select * from users where username = $1
+        "#,
+        input.username
+    )
+    .fetch_one(&ctx.db)
+    .await
+    .map_err(| err | {
+        error!("Error trying to login: {}", err);
+        ApiError::UserDoesNotExist
+    })?;
+
+    Ok(Json(user))
 }

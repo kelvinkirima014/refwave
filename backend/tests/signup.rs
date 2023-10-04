@@ -1,4 +1,5 @@
 use backend::config::Config;
+use hyper::{Client, Request, Body};
 use sqlx::postgres::PgPoolOptions;
 
 #[tokio::test]
@@ -13,7 +14,7 @@ async fn signup_returns_a_200_for_valid_form_data() {
 
     let client = hyper::Client::new();
 
-    let body = hyper::Body::from("username=luffy");
+    let body = hyper::Body::from("username=hodari");
 
     let request = hyper::Request::builder()
         .method(hyper::Method::POST)
@@ -30,16 +31,17 @@ async fn signup_returns_a_200_for_valid_form_data() {
     assert_eq!(response.status(), hyper::StatusCode::OK);
 
     let saved = sqlx::query!(
-        "select username, referral_code from users where username = 'luffy' ",
+        "select username, referral_code from users where username = 'hodari' ",
         )
         .fetch_one(&db_connection)
         .await
         .expect("Failed to fetch saved data");
 
-    assert_eq!(saved.username, "luffy");
+    assert_eq!(saved.username, "hodari");
     assert!(!saved.referral_code.is_empty());
 
 }
+
 
 #[tokio::test]
 async fn refcode_signup_returns_a_200_for_valid_form_data() {
@@ -81,4 +83,28 @@ async fn refcode_signup_returns_a_200_for_valid_form_data() {
     assert!(!saved.referral_code.is_empty());
 
 
+}
+
+
+#[tokio::test]
+async fn login_returns_user_data(){
+
+    let client = Client::new();
+
+    let body = Body::from("username=john_doe70910");
+
+    let request = Request::builder()
+        .method(hyper::Method::POST)
+        .header("Content-Type", "application/x-www-form-urlencoded")
+        .uri("http://127.0.0.1:8080/users/login")
+        .body(body)
+        .expect("failed to create request");
+
+    let response = client
+        .request(request)
+        .await
+        .expect("Failed to send response");
+
+    assert_eq!(response.status(), hyper::StatusCode::OK);
+        
 }
