@@ -1,11 +1,6 @@
 use backend::config::Config;
 use sqlx::postgres::PgPoolOptions;
 
-
-//make sure to use database transactions in tests
-//to keep them isolated and not pollute the database.
-//After the test is done, I can roll back the transaction
-// so that no actual data is written to the database
 #[tokio::test]
 async fn signup_returns_a_200_for_valid_form_data() {
     let config: Config = Config::new();
