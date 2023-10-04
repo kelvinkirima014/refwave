@@ -79,7 +79,8 @@ pub async fn signup_refcode(
         ApiError::UserDoesNotExist
     })?;
 
-
+    //create a databe transaction in order to be able
+    //to insert and update the db atomically
     let mut tx = ctx.db.begin().await.map_err(| err | {
         error!("error starting database transaction: {err}");
         ApiError::InternalServerError
@@ -106,6 +107,7 @@ pub async fn signup_refcode(
         ApiError::InternalServerError
     })?;
 
+    //Increment the referrer's invited_users_count
     sqlx::query!(
         r#"
             update users

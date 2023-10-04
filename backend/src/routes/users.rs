@@ -29,10 +29,6 @@ pub fn generate_username(referrer_username: &str) -> Result<String, ApiError> {
     Ok(format!("{}{}", referrer_username,random_num))
 }
 
-
-//will probably need to derive sqlx::FromRow to make data
-//fetchable from the database
-
 #[derive(Serialize, Deserialize, Debug)]
 pub struct UsernameInput {
     pub username: String,
@@ -43,7 +39,7 @@ pub struct RefcodeInput {
     pub referral_code: String,
 }
 
-
+//need to derive FromRow to make data fetchable from database
 #[derive(Serialize, FromRow, Deserialize, Debug)]
 pub struct User {
     pub username: String,
