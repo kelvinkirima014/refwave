@@ -42,7 +42,7 @@ pub async fn signup_username(
                    return ApiError::UserAlreadyExists;
                 }
             }
-            
+
             error!("error trying to insert into db: {}", err);
             ApiError::InternalServerError
         })?;
@@ -79,6 +79,13 @@ pub async fn signup_refcode(
         ApiError::UserDoesNotExist
     })?;
 
+
+    let mut tx = ctx.db.begin().await.map_err(| err | {
+        error!("error starting database transaction: {err}");
+        ApiError::InternalServerError
+    })?;
+
+
     let new_username = generate_username(&referrer.username)?;
     let new_referral_code = generate_referral_code(new_username.clone())?;
     let new_user = sqlx::query_as!(
@@ -92,10 +99,31 @@ pub async fn signup_refcode(
         new_referral_code,
         referrer.referral_code
     )
-    .fetch_one(&ctx.db)
+    .fetch_one(&mut *tx)
     .await
     .map_err(| err | {
         error!("error creating new user from username: {err}");
+        ApiError::InternalServerError
+    })?;
+
+    sqlx::query!(
+        r#"
+            update users
+            set invited_users_count = invited_users_count + 1
+            where referral_code = $1
+        "#,
+        input.referral_code
+    )
+    .execute(&mut *tx)
+    .await
+    .map_err(| err | {
+        error!("error updating referrer's invited_users_count: {err}");
+        ApiError::InternalServerError
+    })?;
+
+    //commit the transaction
+    tx.commit().await.map_err(| err | {
+        error!("error committing the transaction: {err}");
         ApiError::InternalServerError
     })?;
 
