@@ -15,16 +15,16 @@ export default function Home() {
           target="_blank"
           class="text-red-200 hover:underline"
         >
-          signup
-        </a>{" "}
-        and refer you friends to join the wave.
+          signup{" "}
+        </a>
+        and refer your friends to join the wave.
       </p>
       <p class="my-4">
         <span>Home</span>
         {" - "}
         <A href="/signup" class="text-red-200 hover:underline">
           Signup Page
-        </A>{" "}
+        </A>
       </p>
     </main>
   );
