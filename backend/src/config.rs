@@ -8,7 +8,7 @@ use clap::Parser;
 /// But you could also pass them via the CLI especially in a production 
 /// deployment setting.
 
-#[derive(clap::Parser)]
+#[derive(clap::Parser, Clone)]
 pub struct Config {
     /// The connection URL for the Postgres database this application should use.
     #[clap(long, env)]
@@ -21,12 +21,3 @@ impl Config {
         Config::parse()
     }
 }
-
-
-
-// impl Default for Config {
-//     fn default() -> Self {
-//         dotenv().ok();
-//         Config::parse()
-//     }
-// }

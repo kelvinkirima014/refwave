@@ -3,7 +3,6 @@ use hyper::Method;
 use sqlx::PgPool;
 use tower::ServiceBuilder;
 use tower_http::cors::{ CorsLayer, Any };
-use std::sync::Arc;
 use std::net::SocketAddr;
 use axum::{
     Router,
@@ -22,7 +21,7 @@ use crate::config::Config;
 
 #[derive(Clone)]
 pub struct ApiContext {
-    pub config: Arc<Config>,
+    pub config: Config,//Arc<Config>,
     pub db: PgPool,
 }
 
@@ -45,7 +44,7 @@ pub async fn run(config: Config, db: PgPool) -> color_eyre::Result<(), anyhow::E
         ServiceBuilder::new()
         .layer(cors)
         .layer(Extension(ApiContext {
-            config: Arc::new(config),
+            config,//Arc::new(config),
             db,
         }))
         );
