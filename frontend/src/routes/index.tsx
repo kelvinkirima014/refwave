@@ -25,6 +25,8 @@ export default function Home() {
         <A href="/signup" class="text-red-200 hover:underline">
           Signup Page
         </A>
+        {" - "}
+        <A href="/referralSignup" class="text-red-200 hover:underline">Refcode Signup</A>
       </p>
     </main>
   );

@@ -40,6 +40,10 @@ export default function Root() {
                 <li class={`border-b-2 ${active("/signup")} mx-1.5 sm:mx-6`}>
                   <A href="/signup">Signup</A>
                 </li>
+
+                <li class={`border-b-2 ${active("/referralSignup")} mx-1.5 sm:mx-6`}>
+                  <A href="/referralSignup">Refcode signup</A>
+                </li>
               </ul>
             </nav>
             <Routes>
