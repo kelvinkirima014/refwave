@@ -74,6 +74,7 @@ export default function Home() {
     );
   };
 
+  //We need this here to handle the logIn logic
   const handleSubmit = async () => {
 
         try {

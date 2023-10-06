@@ -18,24 +18,20 @@ async fn main() -> anyhow::Result<(), anyhow::Error> {
         .with(format_layer)
         .init();
 
-
     //parse our configuration from the environment
     let config = Config::parse();
-    info!("Configuration loaded successfully");
-
-    info!("Attempting to connect to the database...");
+  
     let db = PgPoolOptions::new()
         .max_connections(50)
         .connect(&config.database_url)
         .await?;
-    info!("Initialized db!");
 
     info!("Starting database migrations...");
     sqlx::migrate!().run(&db).await?;
-    info!("Database migrations completed successfully");
+  
 
     startup::run(config, db).await?;
-   // info!("Program Server Running...");
+   
 
     Ok(())
     

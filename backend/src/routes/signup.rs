@@ -46,7 +46,6 @@ pub async fn signup_username(
             error!("error trying to insert into db: {}", err);
             ApiError::InternalServerError
         })?;
-        debug!("Successfully inserted user: {:?}", user);
 
         Ok(Json(user))
     }
@@ -57,8 +56,7 @@ pub async fn signup_refcode(
     ctx: Extension<ApiContext>,
     Form(input): Form<RefcodeInput>
 ) -> Result<Json<User>, ApiError> {
-    debug!("signing up user with referral code!");
-
+    
     if input.referral_code.is_empty() {
         return Err(ApiError::MissingCredential);
     }
