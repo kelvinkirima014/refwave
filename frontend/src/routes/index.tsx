@@ -131,6 +131,8 @@ export default function Home() {
           LogIn
         </button>
       </div>
+      <p>Or</p>
+     <p>register an account</p>
     </div>
 
     </div>

@@ -6,8 +6,6 @@ import { createServerAction$ } from "solid-start/server";
 export default function Signup() {
 
     const [username, setUsername] = createSignal("");
-    const [showAlert, setShowAlert] = createSignal(false);
-    const [alertMessage, setAlertMessage] = createSignal("");
     
     const handleSubmit = async () => {
         if (username().length < 3) {

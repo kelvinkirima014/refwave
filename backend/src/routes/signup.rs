@@ -15,8 +15,7 @@ pub async fn signup_username(
     Form(input): Form<UsernameInput>
 ) -> Result<Json<User>, ApiError> {
     debug!("Received signup request for username: {}", input.username);
-
-
+    
     let referral_code = generate_referral_code(input.username.clone())?;
 
     if input.username.is_empty(){
