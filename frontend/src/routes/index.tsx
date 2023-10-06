@@ -39,11 +39,10 @@ export default function Home() {
     }
   }
 
-  //onMount(fetchData);
+
 
   // Render the dashboard data in a table
   const renderDashboard = () => {
-     //fetchData();
     console.log("Rendering dashboard", data());
     return (
       <table class="table-auto mt-8">
@@ -95,7 +94,6 @@ export default function Home() {
                 console.log("Login Successful!");
                 setLoggedIn(true);
                 fetchData();
-                // window.location.href = "/";
              
             } else {
                 console.error("login failed:", await response.text());
