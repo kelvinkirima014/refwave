@@ -1,10 +1,13 @@
 import { createSignal } from "solid-js";
-import { A } from "solid-start";
+import { A, useNavigate } from "solid-start";
 import { createServerAction$ } from "solid-start/server";
+//const navigate = useNavigate()
 
 export default function Signup() {
 
     const [username, setUsername] = createSignal("");
+    const [showAlert, setShowAlert] = createSignal(false);
+    const [alertMessage, setAlertMessage] = createSignal("");
     
     const handleSubmit = async () => {
         if (username().length < 3) {
@@ -27,6 +30,8 @@ export default function Signup() {
 
                 if (response.ok) {
                     console.log("signup successful!");
+                    //navigate("/")
+                    //window.location.href = "/";
                 } else {
                     console.error("Signup failed:", await response.text());
                 }

@@ -24,6 +24,7 @@ export default function ReferralSignup() {
 
             if (response.ok) {
                 console.log("signup successful!");
+                window.location.href = "/";
             } else {
                 console.error("signup failed:", await response.text());
             }
