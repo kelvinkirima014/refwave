@@ -1,4 +1,5 @@
 use axum::http::HeaderName;
+use axum::routing::get;
 use hyper::Method;
 use sqlx::PgPool;
 use tower::ServiceBuilder;
@@ -12,6 +13,7 @@ use tracing::info;
 
 use crate::routes::users::router;
 use crate::config::Config;
+use crate::sse::sse_handler;
 
 
 ///The core type through which handler functions can access common API state.
@@ -28,6 +30,7 @@ pub struct ApiContext {
 
 pub fn api_router() -> Router {
     router()
+    .route("/sse", get(sse_handler))
 }
 
 pub async fn run(config: Config, db: PgPool) -> color_eyre::Result<(), anyhow::Error> {
