@@ -39,6 +39,20 @@ export default function Home() {
     }
   }
 
+  const setupSSE = () => {
+    let eventSource = new EventSource("http://127.0.0.1:8080/sse");
+
+    eventSource.onmessage = (event) => {
+      const updateData = JSON.parse(event.data);
+      setData(updateData);
+    };
+
+    eventSource.onerror = (error) => {
+      console.error("EventSource Failed:", error);
+      eventSource.close();
+    }
+  }
+
 
 
   // Render the dashboard data in a table
@@ -95,6 +109,7 @@ export default function Home() {
                 console.log("Login Successful!");
                 setLoggedIn(true);
                 fetchData();
+                setupSSE();
              
             } else {
                 console.error("login failed:", await response.text());
