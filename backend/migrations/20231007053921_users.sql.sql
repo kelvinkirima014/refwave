@@ -29,3 +29,19 @@ create trigger update_users_modtime
 before update on users
 for each row
 execute function update_timestamp();
+
+--add a function to notify incase of new data changes
+create or replace function notify_trigger() returns trigger as $$
+declare
+begin
+    notify user_changes;
+    return new;
+end;
+$$ language plpgsql;
+
+drop trigger if exists update_changes_trigger on users;
+
+--trigger to automatically update notify_trigger
+create trigger update_changes_trigger
+after insert or update or delete on users
+for each row execute function notify_trigger();
