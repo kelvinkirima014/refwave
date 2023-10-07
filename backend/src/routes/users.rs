@@ -6,29 +6,6 @@ use sqlx::{FromRow, types::chrono};
 use crate::{root, error::ApiError};
 use super::{health_check, signup_username, signup_refcode, view_users, login};
 
-pub fn router() -> Router {
-Router::new()
-    .route("/", get(root))
-    .route("/health_check", get(health_check))
-    .route("/users/view", get(view_users))
-    .route("/users/signup-username", post(signup_username))
-    .route("/users/signup-refcode", post(signup_refcode))
-    .route("/users/login", post(login))
-}
-
-pub fn generate_referral_code(username:String) -> Result<String, ApiError> {
-    if username.len() < 3 {
-        return Err(ApiError::InvalidUserName);
-    }
-    let random_num = thread_rng().gen_range(10000..100000);
-    let prefix = &username[..3].to_uppercase();
-    Ok(format!("{}{}", prefix, random_num))
-}
-
-pub fn generate_username(referrer_username: &str) -> Result<String, ApiError> {
-    let random_num = thread_rng().gen_range(10000..100000);
-    Ok(format!("{}{}", referrer_username,random_num))
-}
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct UsernameInput {
@@ -51,3 +28,29 @@ pub struct User {
     pub created_at: Option<chrono::DateTime<chrono::Utc>>,
     pub updated_at: Option<chrono::DateTime<chrono::Utc>>,
 }
+
+
+pub fn generate_referral_code(username:String) -> Result<String, ApiError> {
+    if username.len() < 3 {
+        return Err(ApiError::InvalidUserName);
+    }
+    let random_num = thread_rng().gen_range(10000..100000);
+    let prefix = &username[..3].to_uppercase();
+    Ok(format!("{}{}", prefix, random_num))
+}
+
+pub fn generate_username(referrer_username: &str) -> Result<String, ApiError> {
+    let random_num = thread_rng().gen_range(10000..100000);
+    Ok(format!("{}{}", referrer_username,random_num))
+}
+
+pub fn router() -> Router {
+    Router::new()
+        .route("/", get(root))
+        .route("/health_check", get(health_check))
+        .route("/users/view", get(view_users))
+        .route("/users/signup-username", post(signup_username))
+        .route("/users/signup-refcode", post(signup_refcode))
+        .route("/users/login", post(login))
+}
+
