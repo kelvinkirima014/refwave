@@ -13,7 +13,7 @@ use tracing::info;
 
 use crate::routes::users::router;
 use crate::config::Config;
-use crate::sse::sse_handler;
+use crate::server_sent::sse_handler;
 
 
 ///The core type through which handler functions can access common API state.

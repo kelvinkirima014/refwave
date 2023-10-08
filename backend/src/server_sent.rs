@@ -7,7 +7,7 @@ use tracing::error;
 use crate::{startup::ApiContext, error::ApiError, routes::users::User};
 
 
-///Route handlers for Server Sent Events
+///Route handler for Server Sent Events
 pub async fn sse_handler(ctx: Extension<ApiContext>) -> Result<impl IntoResponse, ApiError> {
     let (tx, rx): (Sender<String>, Receiver<String>) = broadcast::channel(500);
 
