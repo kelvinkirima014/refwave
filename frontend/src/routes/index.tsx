@@ -17,6 +17,7 @@ export default function Home() {
   const [username, setUsername] = createSignal("");
   const [loggedIn, setLoggedIn] = createSignal(false);
   const [data, setData] = createSignal<DashboardItem[]>([]);
+  const [searchData, setSearchData] = createSignal<DashboardItem[]>([]);
   const[searchUsername, setSearchUsername] = createSignal("");
 
   
@@ -30,6 +31,7 @@ export default function Home() {
 
       if (response.ok) {
         const jsonData = await response.json();
+        setSearchData(jsonData);
         setData(jsonData);
       } else {
         console.error("failed to fetch data:", await response.text());
@@ -155,9 +157,9 @@ export default function Home() {
   const handleSearch = (value: string) => {
     setSearchUsername(value);
     if(searchUsername().trim() == "") {
-      fetchData();
+      setData(searchData());
     } else {
-      const filteredData = data().filter(item => item.username.toLocaleLowerCase()
+      const filteredData = searchData().filter(item => item.username.toLocaleLowerCase()
       .includes(searchUsername().toLowerCase()));
       setData(filteredData);
     }
