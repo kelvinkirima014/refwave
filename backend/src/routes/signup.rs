@@ -157,8 +157,8 @@ pub async fn login(
         ApiError::UserDoesNotExist
     })?;
 
-    //set the token expiration time
-    let expiration_duration = chrono::Duration::minutes(10);
+    //set a JWT token expiration time
+    let expiration_duration = chrono::Duration::minutes(4);
     let expiration = (Utc::now() + expiration_duration).timestamp();
 
     //Create the claims for the JWT

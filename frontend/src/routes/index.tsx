@@ -23,10 +23,14 @@ export default function Home() {
   
   const fetchData = async () => {
     console.log("Fetching data...");
+    const token = localStorage.getItem('jwt');
     try {
       const response = await fetch("http://127.0.0.1:8080/users/view", {
         method: 'GET',
         mode: 'cors',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
       });
 
       if (response.ok) {
@@ -56,6 +60,19 @@ export default function Home() {
     }
   }
 
+  const initializeDashboard = async () => {
+    await fetchData();
+    setupSSE();
+  }
+
+  onMount(() => {
+    const token = localStorage.getItem('jwt');
+    if (token) {
+      setLoggedIn(true);
+      initializeDashboard();
+    }
+  });
+
   //We need this here to handle the logIn logic
   const handleSubmit = async () => {
 
@@ -74,11 +91,11 @@ export default function Home() {
             });
 
             if (response.ok) {
+                const responseData = await response.json();
+                localStorage.setItem('jwt', responseData.token);
                 console.log("Login Successful!");
                 setLoggedIn(true);
-                fetchData();
-                setupSSE();
-             
+                initializeDashboard();
             } else {
                 console.error("login failed:", await response.text());
             }
@@ -125,7 +142,8 @@ export default function Home() {
   const renderDashboard = () => {
     console.log("Rendering dashboard", data());
     return (
-      <table class="table-auto mt-8">
+      <div class="flex justify-center items-center">
+        <table class="table-auto mt-8">
         <thead>
           <tr>
             <th class="px-4 py-2">Username</th>
@@ -133,8 +151,6 @@ export default function Home() {
             <th class="px-4 py-2">Referral Code</th>
             <th class="px-4 py-2">Referred By</th>
             <th class="px-4 py-2">Invited Users Count</th>
-            <th class="px-4 py-2">Created At</th>
-            <th class="px-4 py-2">Updated At</th>
           </tr>
         </thead>
         <tbody>
@@ -145,12 +161,13 @@ export default function Home() {
               <td class="px-4 py-2">{item.referral_code}</td>
               <td class="px-4 py-2">{item.referred_by}</td>
               <td class="px-4 py-2">{item.invited_users_count}</td>
-              <td class="px-4 py-2">{item.created_at}</td>
-              <td class="px-4 py-2">{item.updated_at}</td>
             </tr>
           ))}
         </tbody>
       </table>
+
+      </div>
+     
     );
   };
 
@@ -165,9 +182,14 @@ export default function Home() {
     }
   }
 
+  const handleLogout = async() => {
+    localStorage.removeItem('jwt');
+    setLoggedIn(false);
+  }
+
   
   const renderLoggedInContainer = () => (
-    <div class="min-h-screen text-center mx-auto text-gray-300 p-4 bg-gray-900">
+    <div class="relative min-h-screen text-center mx-auto text-gray-300 p-4 bg-gray-900">
        <h1 class="max-6-xs text-6xl text-gray font-thin uppercase my-16">
         Welcome Back, {username()}!
       </h1>
@@ -180,8 +202,13 @@ export default function Home() {
           class="text-gray-900 p-2 w-2/3 border rounded-md"
         />
       </div>
-
       {renderDashboard()}
+
+      <button 
+        onClick={handleLogout} 
+        class="absolute top-[-42px] right-4 bg-red-200 text-gray-900 py-2 px-4 rounded-full"
+        >Logout
+      </button>
     </div>
   )
 
