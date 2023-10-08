@@ -1,5 +1,6 @@
 import { A } from "solid-start";
 import { createSignal, onMount } from "solid-js";
+import { Input } from "postcss";
 
 type DashboardItem = {
   username: string;
@@ -65,14 +66,6 @@ export default function Home() {
     setupSSE();
   }
 
-  onMount(() => {
-    const token = localStorage.getItem('jwt');
-    if (token) {
-      setLoggedIn(true);
-      initializeDashboard();
-    }
-  });
-
   //We need this here to handle the logIn logic
   const handleSubmit = async () => {
 
@@ -93,6 +86,7 @@ export default function Home() {
             if (response.ok) {
                 const responseData = await response.json();
                 localStorage.setItem('jwt', responseData.token);
+                localStorage.setItem('username', username())
                 console.log("Login Successful!");
                 setLoggedIn(true);
                 initializeDashboard();
@@ -105,6 +99,18 @@ export default function Home() {
         }
     }
 
+
+
+  
+  onMount(() => {
+    const token = localStorage.getItem('jwt');
+    const storedUsername = localStorage.getItem('username') || 'Guest';//default to guest if null
+    if (token && storedUsername) {
+      setUsername(storedUsername);
+      setLoggedIn(true);
+      initializeDashboard();
+    }
+  });
 
 
   const renderNotLoggedInContainer = () => (
@@ -184,6 +190,7 @@ export default function Home() {
 
   const handleLogout = async() => {
     localStorage.removeItem('jwt');
+    localStorage.removeItem('username');
     setLoggedIn(false);
   }
 
