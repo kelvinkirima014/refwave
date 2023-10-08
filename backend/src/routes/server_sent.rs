@@ -55,7 +55,8 @@ pub async fn sse_handler(ctx: Extension<ApiContext>) -> Result<impl IntoResponse
         }
     });
 
-    //Create a BroadcastStream with the received data
+    // Transform the receiver end of the broadcast channel into a stream
+    // that emits each message until the channel closes
     let stream = BroadcastStream::new(rx);
 
 
