@@ -17,6 +17,7 @@ export default function Home() {
   const [username, setUsername] = createSignal("");
   const [loggedIn, setLoggedIn] = createSignal(false);
   const [data, setData] = createSignal<DashboardItem[]>([]);
+  const[searchUsername, setSearchUsername] = createSignal("");
 
   
   const fetchData = async () => {
@@ -52,41 +53,6 @@ export default function Home() {
       eventSource.close();
     }
   }
-
-
-
-  // Render the dashboard data in a table
-  const renderDashboard = () => {
-    console.log("Rendering dashboard", data());
-    return (
-      <table class="table-auto mt-8">
-        <thead>
-          <tr>
-            <th class="px-4 py-2">Username</th>
-            <th class="px-4 py-2">ID</th>
-            <th class="px-4 py-2">Referral Code</th>
-            <th class="px-4 py-2">Referred By</th>
-            <th class="px-4 py-2">Invited Users Count</th>
-            <th class="px-4 py-2">Created At</th>
-            <th class="px-4 py-2">Updated At</th>
-          </tr>
-        </thead>
-        <tbody>
-          {data().map((item) => (
-            <tr>
-              <td class="px-4 py-2">{item.username}</td>
-              <td class="px-4 py-2">{item.id}</td>
-              <td class="px-4 py-2">{item.referral_code}</td>
-              <td class="px-4 py-2">{item.referred_by}</td>
-              <td class="px-4 py-2">{item.invited_users_count}</td>
-              <td class="px-4 py-2">{item.created_at}</td>
-              <td class="px-4 py-2">{item.updated_at}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    );
-  };
 
   //We need this here to handle the logIn logic
   const handleSubmit = async () => {
@@ -151,13 +117,68 @@ export default function Home() {
     </div>
 
     </div>
-  )
+  );
 
+  // Render the dashboard data in a table
+  const renderDashboard = () => {
+    console.log("Rendering dashboard", data());
+    return (
+      <table class="table-auto mt-8">
+        <thead>
+          <tr>
+            <th class="px-4 py-2">Username</th>
+            <th class="px-4 py-2">ID</th>
+            <th class="px-4 py-2">Referral Code</th>
+            <th class="px-4 py-2">Referred By</th>
+            <th class="px-4 py-2">Invited Users Count</th>
+            <th class="px-4 py-2">Created At</th>
+            <th class="px-4 py-2">Updated At</th>
+          </tr>
+        </thead>
+        <tbody>
+          {data().map((item) => (
+            <tr>
+              <td class="px-4 py-2">{item.username}</td>
+              <td class="px-4 py-2">{item.id}</td>
+              <td class="px-4 py-2">{item.referral_code}</td>
+              <td class="px-4 py-2">{item.referred_by}</td>
+              <td class="px-4 py-2">{item.invited_users_count}</td>
+              <td class="px-4 py-2">{item.created_at}</td>
+              <td class="px-4 py-2">{item.updated_at}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    );
+  };
+
+  const handleSearch = (value: string) => {
+    setSearchUsername(value);
+    if(searchUsername().trim() == "") {
+      fetchData();
+    } else {
+      const filteredData = data().filter(item => item.username.toLocaleLowerCase()
+      .includes(searchUsername().toLowerCase()));
+      setData(filteredData);
+    }
+  }
+
+  
   const renderLoggedInContainer = () => (
     <div class="min-h-screen text-center mx-auto text-gray-300 p-4 bg-gray-900">
        <h1 class="max-6-xs text-6xl text-gray font-thin uppercase my-16">
         Welcome Back, {username()}!
       </h1>
+
+      <div class="mb-4">
+        <input
+          onInput={(e) => handleSearch(e.target.value)}
+          value={searchUsername()}
+          placeholder="Search for a username..."
+          class="text-gray-900 p-2 w-2/3 border rounded-md"
+        />
+      </div>
+
       {renderDashboard()}
     </div>
   )
