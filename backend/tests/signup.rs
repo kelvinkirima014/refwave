@@ -91,7 +91,7 @@ async fn login_returns_user_data(){
 
     let client = Client::new();
 
-    let body = Body::from("username=john_doe");
+    let body = Body::from("username=captain");
 
     let request = Request::builder()
         .method(hyper::Method::POST)

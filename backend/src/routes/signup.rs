@@ -1,8 +1,11 @@
 use axum::{Extension, Json};
 use axum::extract::Form;
 use axum_macros::debug_handler;
+use chrono::Utc;
+use serde::{Serialize, Deserialize};
+use serde_json::{json, Value};
 use tracing::{error, debug};
-//use serde_json::json;
+use jsonwebtoken::{ encode, EncodingKey, Header };
 use crate::routes::users::{ UsernameInput, User, generate_referral_code, generate_username };
 use crate::startup::ApiContext;
 use crate::error::ApiError;
@@ -128,10 +131,17 @@ pub async fn signup_refcode(
 
 }
 
+///Claims for JWTs
+#[derive(Serialize, Deserialize)]
+struct Claims {
+    username: String,
+    exp: i64,
+}
+
 pub async fn login(
     ctx: Extension<ApiContext>,
     Form(input): Form<UsernameInput>
-) -> Result<Json<User>, ApiError> {
+) -> Result<Json<Value>, ApiError> {
 
     let user = sqlx::query_as!(
         User,
@@ -147,5 +157,24 @@ pub async fn login(
         ApiError::UserDoesNotExist
     })?;
 
-    Ok(Json(user))
+    //set the token expiration time
+    let expiration_duration = chrono::Duration::minutes(10);
+    let expiration = (Utc::now() + expiration_duration).timestamp();
+
+    //Create the claims for the JWT
+    let claims = Claims{
+        username: input.username.clone(),
+        exp: expiration,
+    };
+
+    //Generate the JWT
+    let token = encode(&Header::default(), &claims, &EncodingKey::from_secret("som_key".as_ref()))
+        .map_err(|_| ApiError::TokenCreationFailed)?;
+
+    let response_data = json!({
+        "token": token,
+        "user": user,
+    });
+
+    Ok(Json(response_data))
 }
