@@ -9,21 +9,25 @@ use crate::{startup::ApiContext, error::ApiError, routes::users::User};
 
 ///Route handler for Server Sent Events
 pub async fn sse_handler(ctx: Extension<ApiContext>) -> Result<impl IntoResponse, ApiError> {
+    //create a broadcast channel
     let (tx, rx): (Sender<String>, Receiver<String>) = broadcast::channel(500);
 
+    //a postgres listener that receives notifications incase of changes to the db
     let mut listener = PgListener::connect_with(&ctx.db).await.map_err(|err| {
         error!("Error connecting with PgListener: {}", err);
         ApiError::InternalServerError
     })?;
-
     listener.listen("user_changes").await.map_err(|err| {
         error!("Error listening to user_changes channel: {}", err);
         ApiError::InternalServerError
     })?;
 
+    //spawn an asynchronous task that runs in the background once `sse_handler` is called
     tokio::spawn( async move {
+        //Consume the listener, return a `Stream` of notifications
         let mut notification_stream = listener.into_stream();
 
+        //iterate over the stream by calling `.next`
         while let Some(notification) = notification_stream.next().await {
             if notification.is_ok() {
                 // Fetch updated data from the db
@@ -35,10 +39,12 @@ pub async fn sse_handler(ctx: Extension<ApiContext>) -> Result<impl IntoResponse
                 )
                 .fetch_all(&ctx.db)
                 .await;
-
+                //handle both `Ok` and `Err` values
                 match users_result {
                     Ok(users) => {
+                        //serialize user data into a string of json
                         let message = format!("data: {}\n\n", serde_json::to_string(&users).unwrap());
+                        //send the serialized data to the other end of the channel
                         let _ = tx.send(message);
                     }
                     Err(err) => {
@@ -49,6 +55,7 @@ pub async fn sse_handler(ctx: Extension<ApiContext>) -> Result<impl IntoResponse
         }
     });
 
+    //Create a BroadcastStream with the received data
     let stream = BroadcastStream::new(rx);
 
 
