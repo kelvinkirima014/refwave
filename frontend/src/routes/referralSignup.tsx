@@ -1,8 +1,9 @@
 import { createSignal } from "solid-js";
-import { A } from "solid-start";
+import { A, useNavigate } from "solid-start";
 import { createServerAction$ } from "solid-start/server";
 
 export default function ReferralSignup() {
+    const navigate = useNavigate();
 
     const [referralCode, setReferralCode] = createSignal("");
 
@@ -24,7 +25,7 @@ export default function ReferralSignup() {
 
             if (response.ok) {
                 console.log("signup successful!");
-                window.location.href = "/";
+                navigate("/")
             } else {
                 console.error("signup failed:", await response.text());
             }
