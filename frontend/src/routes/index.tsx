@@ -1,6 +1,5 @@
 import { A } from "solid-start";
-import { createSignal, onMount } from "solid-js";
-import { Input } from "postcss";
+import { createSignal, onCleanup, onMount } from "solid-js";
 
 type DashboardItem = {
   username: string;
@@ -112,7 +111,7 @@ export default function Home() {
     }
   });
 
-
+ 
   const renderNotLoggedInContainer = () => (
     <div class="min-h-screen text-center mx-auto text-gray-300 p-4 bg-gray-900">
       
@@ -138,7 +137,7 @@ export default function Home() {
         </button>
       </div>
       <p class="m-4">Or</p>
-     <p class=""><A href="/signup" class="text-white hover:underline">register an account</A></p>
+     <p class=""><A href="/signup" class="text-white hover:underline">Register an Account</A></p>
     </div>
 
     </div>

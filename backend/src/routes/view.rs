@@ -11,7 +11,7 @@ pub async fn view_users(
     let users = sqlx::query_as!(
         User,
         r#"
-            select * from users order by invited_users_count
+            select * from users order by invited_users_count desc
         "#
     )
     .fetch_all(&ctx.db)

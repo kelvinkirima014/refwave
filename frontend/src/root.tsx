@@ -21,6 +21,8 @@ export default function Root() {
     path == location.pathname
       ? "border-red-200"
       : "border-transparent hover:border-red-200";
+  // Check if the user is logged in
+  // const isLoggedIn = typeof window!== 'undefined' && !localStorage.getItem('jwt');
   return (
     <Html lang="en">
       <Head>
@@ -36,14 +38,13 @@ export default function Root() {
                 <li class={`border-b-2 ${active("/")} mx-1.5 sm:mx-6`}>
                   <A href="/">Home</A>
                 </li>
-        
                 <li class={`border-b-2 ${active("/signup")} mx-1.5 sm:mx-6`}>
                   <A href="/signup">Signup</A>
                 </li>
 
                 <li class={`border-b-2 ${active("/referralSignup")} mx-1.5 sm:mx-6`}>
-                  <A href="/referralSignup">Refcode signup</A>
-                </li>
+                    <A href="/referralSignup">Refcode signup</A>
+                </li>   
               </ul>
             </nav>
             <Routes>
