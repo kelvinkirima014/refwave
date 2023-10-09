@@ -1,6 +1,6 @@
-Refwave is a Referral System, where users can create an account, and invite their friends to join via their referral code.
+Refwave is a high-perfomant Referral System; Users can create an account, and invite their friends to join via their referral code.
 
-The Backend service is built using Rust's Axum framework, a PostgreSQL databas, and sqlx as the database driver. I'm also using the Tower for middlware. The frontend frontend components are built in Solidjs and styled with Tailwindcss.
+The Backend service is built using Rust's Axum framework, a PostgreSQL database, and sqlx as the database driver. I'm also using some Tower components for middleware. The frontend frontend components are built in Solidjs and styled with Tailwindcss.
 
 Key Features
 
@@ -12,7 +12,33 @@ Channels for Concurrent Streaming of Events: We employ the broadcast::channel fr
 
 Reactive UI: The UI is built to take advantage of SolidJS's reactive system, allowing updates at the finest level. When data changes, only the parts of the UI that depend on that particular piece of data get re-rendered. This ensures efficient updates without unnecessary rendering, leading to a snappy UX.
 
+
+Requirements
+
+Postgres
+
+You need access to a PostgreSQL database. If you don't have it already; You can download from here or you can launch a PostgreSQL server in a Docker container.  At the end of the day, you just need a database URL, which you can pass to your web service as an environment variable.
+
+Rust installed
+
+Install Rust
+
+NodeJS
+You'll need a recent version of nodejs installed on your machine
+
+
 Running the Application
 
+git clone refwave
+cd refwave/backend
+ change .env.sample to .env and update it with your database URL
 
+cargo run
 
+Run the client
+
+cd refwave/frontend
+
+npm install
+
+npm run dev --open
