@@ -1,6 +1,6 @@
 Refwave is a high-perfomant Referral System; Users can create an account, and invite their friends to join via their referral code.
 
-The Backend service is built using Rust's Axum framework, a PostgreSQL database, and sqlx as the database driver. I'm also using some Tower components for middleware. The frontend frontend components are built in Solidjs and styled with Tailwindcss.
+The Backend service is built using Rust's [Axum framework](https://github.com/tokio-rs/axum), a PostgreSQL database, and sqlx as the database driver. I'm also using some Tower components for middleware. The frontend frontend components are built in Solidjs and styled with Tailwindcss.
 
 Key Features
 
