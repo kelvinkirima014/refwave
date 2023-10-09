@@ -7,7 +7,11 @@ use tracing::error;
 use crate::{startup::ApiContext, error::ApiError, routes::users::User};
 
 
-///Route handler for Server Sent Events
+/// Route handler for Server Sent Events enabling real-time data propagation.
+/// 
+/// A postgres listener listens for changes in the database. Whenever
+/// there's a change in the DB, the updated data is fetched, serialized,
+///  and then sent over the channel to be emitted as a server-sent event.
 pub async fn sse_handler(ctx: Extension<ApiContext>) -> Result<impl IntoResponse, ApiError> {
     //create a broadcast channel
     let (tx, rx): (Sender<String>, Receiver<String>) = broadcast::channel(500);

@@ -39,7 +39,7 @@ frontend/node_modules
 .classpath
 *.launch
 .settings/
-
+.vscode
 
 # System Files
 .DS_Store
