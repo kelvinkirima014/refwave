@@ -69,7 +69,6 @@ pub async fn sse_handler(ctx: Extension<ApiContext>) -> Result<impl IntoResponse
         .status(StatusCode::OK)
         .header("content-type", "text/event-stream")
         .header("cache-control", "no-cache")
-        .header("connection", "keep-alive")
         .body(hyper::Body::wrap_stream(stream))
         .map_err(|_| ApiError::InternalServerError)?;
 
