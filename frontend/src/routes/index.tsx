@@ -18,7 +18,7 @@ export default function Home() {
   const [loggedIn, setLoggedIn] = createSignal(false);
   const [data, setData] = createSignal<DashboardItem[]>([]);
   const [searchData, setSearchData] = createSignal<DashboardItem[]>([]);
-  const[searchUsername, setSearchUsername] = createSignal("");
+  const[searchTerm, setSearchTerm] = createSignal("");
 
   
   const fetchData = async () => {
@@ -177,12 +177,12 @@ export default function Home() {
   };
 
   const handleSearch = (value: string) => {
-    setSearchUsername(value);
-    if(searchUsername().trim() == "") {
+    setSearchTerm(value);
+    if(searchTerm().trim() == "") {
       setData(searchData());
     } else {
       const filteredData = searchData().filter(item => item.username.toLocaleLowerCase()
-      .includes(searchUsername().toLowerCase()));
+      .includes(searchTerm().toLowerCase()));
       setData(filteredData);
     }
   }
@@ -203,7 +203,7 @@ export default function Home() {
       <div class="mb-4">
         <input
           onInput={(e) => handleSearch(e.target.value)}
-          value={searchUsername()}
+          value={searchTerm()}
           placeholder="Search for a username..."
           class="text-gray-900 p-2 w-2/3 border rounded-md"
         />
