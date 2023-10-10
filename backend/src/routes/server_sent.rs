@@ -67,8 +67,10 @@ pub async fn sse_handler(ctx: Extension<ApiContext>) -> Result<impl IntoResponse
     //Construct the SSE response with appropriate headers
     let response = Response::builder()
         .status(StatusCode::OK)
+        //Send events in `text/event-source` format
         .header("content-type", "text/event-stream")
         .header("cache-control", "no-cache")
+        //Server sent connections need to stay open to receive updates
         .header("connection", "keep-alive")
         .body(hyper::Body::wrap_stream(stream))
         .map_err(|_| ApiError::InternalServerError)?;

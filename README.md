@@ -4,9 +4,9 @@ The Backend service is built using Rust's [Axum framework](https://github.com/to
 
 ## Key Features
 
-**Async communication**: We employ the [tokio runtime](https://tokio.rs/) for async rust, allowing our system to handle requests and operations in a non-blocking manner. This boosts the perfomance of our application by allowing tasks to run without waiting for others to complete.
+**Server-Sent Events(SSE) for Real-time Updates**: [Server sent events](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events) allow the server to push updates to the client in realtime without the need for a client to initiate a request. They're similar to websockets but are unidirectional; that is, data messages are delivered in one direction, from the server to the client. This makes them an excellent choice when there's no need to send data from the client to the server in message form. The client subscribes to updates via the [EventSource](https://developer.mozilla.org/en-US/docs/Web/API/EventSource) API by opening a persistent connection to the server, which in turn sends events in the form of `text/event-stream`. 
 
-**Server-Sent Events(SSE) for Real-time Updates**: [Server sent events](https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events) allow the server to push updates to the client in realtime without the need for a client to initiate a request. They're similar to websockets but don't require bidirectional communication and run on plain http.
+**Async communication**: We employ the [tokio runtime](https://tokio.rs/) for async rust, allowing our system to handle requests and operations in a non-blocking manner. This boosts the perfomance of our application by allowing tasks to run without waiting for others to complete.
 
 **Channels for Concurrent Streaming of Events**: We employ the [broadcast::channel](https://docs.rs/tokio/latest/tokio/sync/broadcast/) from tokio which allows multiple receivers. This means that multiple clients can subscribe and listen for updates concurrently. Serialized data is sent over one side of the channel, and then emmited over the other end as a server-sent event.
 
@@ -30,7 +30,9 @@ You need access to a PostgreSQL database. If you don't have it already; You can 
 
 We'll leverage the sqlx cli to handle database migrations. Install it by running:
 
-```bash $ cargo install sqlx-cli ```
+```bash
+ cargo install sqlx-cli 
+```
 
 ### NodeJS
 
@@ -39,7 +41,7 @@ You'll need a recent(18+) version of nodejs installed on your machine. [Download
 
 ## Running the Application
 
-To run the applicateion, clone the repo:
+To run the application, clone the repo:
 ```bash
 git clone https://github.com/kelvinkirima014/refwave.git
 ```
