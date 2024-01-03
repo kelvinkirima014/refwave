@@ -1,4 +1,4 @@
-Refwave allows users to create an account and invite their friends to join the platform via a referral code. It's not really useful for anything besides showcasing how one can architect a Rust backend and communicate with it from a Javascript environment.
+Refwave is a referral code generation system that allows users to create an account and invite their friends to join via a referral code. It's not really useful for anything besides showcasing how one can architect a Rust backend and communicate with it from a Javascript environment.
 
 The Backend service is built using Rust's [Axum framework](https://github.com/tokio-rs/axum), a PostgreSQL database, and [sqlx](https://docs.rs/sqlx/latest/sqlx/) as the database driver. I'm also using some Tower's [ServiceBuilder](https://docs.rs/tower/latest/tower/struct.ServiceBuilder.html) for middleware. The frontend components are built in [Solidjs](https://www.solidjs.com/) and styled with [Tailwindcss](https://tailwindcss.com/).
 
