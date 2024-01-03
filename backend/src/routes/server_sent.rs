@@ -63,7 +63,6 @@ pub async fn sse_handler(ctx: Extension<ApiContext>) -> Result<impl IntoResponse
     // that emits each message until the channel closes
     let stream = BroadcastStream::new(rx);
 
-
     //Construct the SSE response with appropriate headers
     let response = Response::builder()
         .status(StatusCode::OK)

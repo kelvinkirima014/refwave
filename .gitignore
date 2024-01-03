@@ -32,6 +32,7 @@ netlify
 
 # dependencies
 frontend/node_modules
+scripts/node_modules
 
 # IDEs and editors
 /.idea
